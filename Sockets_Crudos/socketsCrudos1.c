@@ -15,6 +15,9 @@
 
 #include <net/ethernet.h> /* the L2 protocols */
 
+unsigned char MACorigen[6];
+
+
 void getDatos(int ds){
 	//declaramos estructura
 	struct ifreq nic;
@@ -34,6 +37,21 @@ void getDatos(int ds){
 	else
 	{
 		printf("\nEl index es: %d\n", nic.ifr_ifindex);
+		if(ioctl(ds, SIOCGIFHWADDR, &nic) == -1)
+		{
+			perror("\nError al obtener la MAC");
+			exit(0);
+		}
+		else
+		{
+			//Copiamos la MAC
+			memcpy(MACorigen, nic.ifr_hwaddr.sa_data, 6);
+			printf("\n La MAC es ");
+			for(int i = 0; i<6; i++)
+			{
+				printf("%2x:", MACorigen[i]);
+			}
+		}
 
 	}
 }
